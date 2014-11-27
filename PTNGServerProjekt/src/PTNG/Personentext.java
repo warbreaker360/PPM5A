@@ -1,6 +1,6 @@
 package PTNG;
 
-public class Personentext extends Person {
+public class Party {
 	
 
 	String textfile;

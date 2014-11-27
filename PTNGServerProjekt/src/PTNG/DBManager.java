@@ -46,16 +46,16 @@ Connection conn;
 		                   "(BENUTZERID  TEXT PRIMARY KEY    NOT NULL," +
 		                   " NACHNAME      TEXT    NOT NULL, " + 
 		                   " VORNAME        TEXT     NOT NULL, " + 
-		                   " BREITENGRAD     TEXT     NOT NULL, " + 
-		                   " LAENGENGRAD      TEXT    NOT NULL, " + 
+		                   " BREITENGRAD     REAL     NOT NULL, " + 
+		                   " LAENGENGRAD      REAL    NOT NULL, " + 
 		                   " PASSWORT          TEXT   NOT NULL " + 
 		                   " );";		                   
-		                   
-		      String sp = "CREATE TABLE Text " +
-	                   "(BENUTZERID  TEXT PRIMARY KEY    NOT NULL," +
-	                   " TEXTFILE        TEXT     NOT NULL, " + 
-	                    " );";		                   
-	                   
+		                  
+		    String sp=  "CREATE TABLE Partys"+
+	                    "(PARTYID TEXT PRIMARY KEY    NOT NULL"+
+	                    "TEXTFILE        TEXT     NOT NULL, "+
+	                    "IDBENUTZER        TEXT   , "+           //fragen brauche zahlenwert 
+	                    "BENUTZERID TEXT "+");";
 		     
 		      stmt.executeUpdate(sq);
 		      stm.executeUpdate(sp);
@@ -72,7 +72,7 @@ Connection conn;
 		public void speicherePerson(Person p) throws SQLException {
 			
 			String sql = "INSERT INTO REGISTRATION(passwort,nickname) VALUES('"
-					+ p.getPasswort() + "'," + p.getNickname() + ")";
+					+ p.getPasswort() ;
 
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
@@ -112,40 +112,104 @@ Connection conn;
 
 		}
 		
-		public void speicheretextdatei (Personentext p) throws SQLException 
+		public void speicheretext (Person p) throws SQLException 
 		{
-			String sql = "INSERT INTO FILES(nickname,textfile) VALUES(?,?)";
+			String sql = "INSERT INTO Party(PARTYID,TEXTFILE,BENUTZERID) VALUES(?,?)";
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1,p.getNickname());
-			pstmt.setString(2,p.getTextfile());
+			pstmt.setString(1,p.getParty());
+			pstmt.setString(2,p.getText());
+			pstmt.setString(2,p.getBenutzerID());
 			pstmt.executeUpdate();
 			pstmt.close();
 
 		}
 
 
-		public ArrayList<Personentext> holePersonarray () throws SQLException
+		public ArrayList<Person> holePersonarray () throws SQLException
 		 {
-		 String sql = "SELECT * FROM FILES";
-		 Statement stmt = conn.createStatement();
-		 ResultSet rs = stmt.executeQuery(sql);
+		    String sql = "SELECT * FROM Partys";
+		    Statement stmt = conn.createStatement();
+		    ResultSet rs = stmt.executeQuery(sql);
 		
-		 ArrayList<Personentext> s = new ArrayList<Personentext>();
+		 ArrayList<Person> s = new ArrayList<Person>();
 		
 		 while(rs.next())
 		 {
-		 Personentext p = new Personentext();
-		 p.setNickname(rs.getString("nickname"));
-		 p.setTextfile(rs.getString("textfile"));
-		 s.add(p);
+		      	Person p = new Person();
+		      	p.setParty(rs.getString("Party")); //getString --> von Datenbank
+		      	p.setText(rs.getString("textfile"));
+		      	p.setBenutzerID(rs.getString("BenutzerID"));
+		
+		      	s.add(p);
 		 }
-		 rs.close();
-		 stmt.close();
-		 return s;
+		 	rs.close();
+		 	stmt.close();
+		 	return s;
 		 }
 		
+		public int IDbenutzer(Person p)//Benutzer id erstellen also eine Zahl
+		{ 
 		
-		public void holePerson () throws SQLException
+		String sql = "SELECT * FROM Partys";
+	    Statement stmt = conn.createStatement();
+	    ResultSet rs = stmt.executeQuery(sql);
+		  
+		  int i;
+		  double n=Math.random()*10000;
+		  i =(int)n;
+		  
+		while(rs.next()) 
+		{
+			int id = rs.getInt("IDBENUTZER");    //Fehler überprüfen
+			if(i==id)
+			{
+				n=Math.random()*10000;
+				i =(int)n;	
+			}
+			else
+			{
+				p.setIdbenutzer(i);
+			}
+			
+		}
+			
+			
+		}
+		
+		public boolean ueberpruefeParty (Person p) throws SQLException
+		{
+			try {
+				String sql = "SELECT * FROM Party";
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql);
+				while (rs.next()) {
+
+					String party = rs.getString("PARTYID");
+					String benutzer = rs.getString("BENUTZERID");
+					Person q = new Person();
+					q.setBenutzerID(benutzer);
+					q.setParty(party);
+					if (q.getBenutzerID().equals(p.getBenutzerID()) && q.getParty().equals(q.getParty())) 
+					{
+						return true;
+						
+					} 
+					else 
+					
+					{
+						return false;
+					}
+					rs.close();
+					stmt.close();
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		public void holePerson1 () throws SQLException
 		 {
 		 String sql = "SELECT * FROM FILES";
 		 Statement stmt = conn.createStatement();
@@ -161,8 +225,6 @@ Connection conn;
 		 stmt.close();
 		 
 		 }
-
-		
 		
 		
 		public boolean überprüfedaten(Person p) throws SQLException {
@@ -197,5 +259,5 @@ Connection conn;
 			return false;
 		}	
 		
-	
+
 }

@@ -8,7 +8,21 @@ public class Person {
 	String längegrad;
 	String passwort;
 	String text;
+	String party;
+	int idbenutzer;
 	
+	public int getIdbenutzer() {
+		return idbenutzer;
+	}
+	public void setIdbenutzer(int idbenutzer) {
+		this.idbenutzer = idbenutzer;
+	}
+	public String getParty() {
+		return party;
+	}
+	public void setParty(String party) {
+		this.party = party;
+	}
 	public String getText() {
 		return text;
 	}
@@ -51,6 +65,7 @@ public class Person {
 	public void setPasswort(String passwort) {
 		this.passwort = passwort;
 	}
+	
 	public Person(String nachname, String vorname, String benutzerID,
 			String breitengrad, String längegrad, String passwort) {
 		super();
@@ -74,7 +89,35 @@ public class Person {
 		this.passwort = passwort;
 		this.text=text;
 	}
+	public Person(String benutzerID, String text,
+			String party) {
+		super();
+		this.benutzerID = benutzerID;
+		this.text = text;
+		this.party = party;
+	}
 	
+	
+	
+	
+	public Person(String benutzerID, String nachname, String vorname,
+			String breitengrad, String längegrad, String passwort, String text,
+			String party, int idbenutzer) {
+		super();
+		this.benutzerID = benutzerID;
+		this.nachname = nachname;
+		this.vorname = vorname;
+		this.breitengrad = breitengrad;
+		this.längegrad = längegrad;
+		this.passwort = passwort;
+		this.text = text;
+		this.party = party;
+		this.idbenutzer = idbenutzer;
+	}
+	public Person()
+	{
+		
+	}
 	
 	
 
